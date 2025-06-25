@@ -13,7 +13,7 @@ const { Title, Paragraph, Text } = Typography
 
 export default function Dashboard() {
   const [data, setData] = useState<ProductData[]>([])
-  const [filterData, setfilterData] = useState<ProductData[]>([])
+  const [filterData, setFilterData] = useState<ProductData[]>([])
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
   const [loading, setLoading] = useState<boolean>(true);
   const [searchValue, setSearchValue] = useState<string>("");
@@ -28,7 +28,7 @@ export default function Dashboard() {
         if (res.status === 200) {
           // console.log(res.data);
           setData(res.data);
-          setfilterData(res.data)
+          setFilterData(res.data)
         }
       } catch (error) {
         console.log("error");
@@ -41,12 +41,12 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (selectedCategory === "all") {
-      setfilterData(data);
+      setFilterData(data);
     } else {
       const filtered = data.filter(
         (item) => item.category?.slug === selectedCategory
       );
-      setfilterData(filtered);
+      setFilterData(filtered);
     }
   }, [selectedCategory, data]);
 
@@ -57,12 +57,12 @@ export default function Dashboard() {
   const handleSearch = useCallback((value: string) => {
     setSearchValue(value);
     if (!value) {
-      setfilterData(data);
+      setFilterData(data);
     } else {
       const filtered = data.filter(item =>
         item.title.toLowerCase().includes(value.toLowerCase())
       );
-      setfilterData(filtered);
+      setFilterData(filtered);
     }
   }, [data]);
 
@@ -107,20 +107,37 @@ export default function Dashboard() {
                         preview={false}
                       />}
                   >
-                    <Title level={4} style={{ textAlign: "center", margin: 0 }}>
+                    <Title level={5} style={{ textAlign: "center", margin: 0 }}>
                       {item.title}
                     </Title>
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginTop: 15 }}>
-                      <Paragraph style={{ fontFamily: "cursive", fontWeight: "bold", fontSize: "18", margin: 0 }}>
+                    <div style={{
+                      marginTop: 15,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      gap: 12,
+                      flexWrap: "wrap"
+                    }}>
+                      <Paragraph style={{ fontFamily: "cursive", fontWeight: "bold", fontSize: 18, margin: 0 }}>
                         Price: ${item.price}
                       </Paragraph>
                       <Button
                         onClick={() => handleCartData(item)}
-                        style={{ background: "black", color: "white", borderRadius: "50px", fontWeight: 600, padding: "20px", textAlign: "center" }}>
-                        <PlusOutlined />   Add to Cart
+                        style={{
+                          background: "black",
+                          color: "white",
+                          borderRadius: "50px",
+                          fontWeight: 600,
+                          padding: "12px 20px",
+                          textAlign: "center",
+                          minWidth: 120,
+                          marginTop: 4,
+                          flexShrink: 0
+                        }}
+                      >
+                        <PlusOutlined /> Add to Cart
                       </Button>
                     </div>
-
                   </Card>
                 </Col>
               ))
@@ -133,7 +150,7 @@ export default function Dashboard() {
 }
 
 
-export const GetUserDetailloader = async () => {
+export const GetUserDetailLoader = async () => {
   try {
     const response = await axiosInstance.get('/auth/profile');
     if (response.status === 200 || response.status === 201) {
