@@ -8,6 +8,7 @@ import "./Dashboard.css"
 import { PlusOutlined } from "@ant-design/icons";
 import { addToCart } from "../../store/CartSlice";
 import { useDispatch } from "react-redux";
+import ProductPreview from "../../pages/previewproduct/PreviewProduct";
 
 const { Title, Paragraph, Text } = Typography
 
@@ -17,6 +18,8 @@ export default function Dashboard() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all")
   const [loading, setLoading] = useState<boolean>(true);
   const [searchValue, setSearchValue] = useState<string>("");
+  const [previewItem, setPreviewItem] = useState<ProductData | null>(null);
+  const [isPreviewVisible, setIsPreviewVisible] = useState(false);
 
   const dispatch = useDispatch()
 
@@ -72,6 +75,11 @@ export default function Dashboard() {
 
   const user = useLoaderData()
 
+  const handlePreview = (item: ProductData) => {
+    setPreviewItem(item);
+    setIsPreviewVisible(true);
+  };
+
   if (loading) {
     return (
       <div style={{ textAlign: "center", marginTop: "100px" }}>
@@ -83,6 +91,7 @@ export default function Dashboard() {
       </div>
     );
   }
+
 
   return (
     <>
@@ -98,6 +107,7 @@ export default function Dashboard() {
               filterData.map((item) => (
                 <Col key={item.id} xs={24} sm={12} md={8} lg={6}>
                   <Card hoverable
+
                     style={{ height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", minHeight: 400 }}
                     cover={
                       <Image
@@ -105,6 +115,7 @@ export default function Dashboard() {
                         src={item.images[0]}
                         style={{ objectFit: "cover", margin: "0 auto", height: "300px", display: "block", background: "#f5f5f5", padding: 8, borderRadius: 20 }}
                         preview={false}
+                        onClick={() => handlePreview(item)}
                       />}
                   >
                     <Title level={5} style={{ textAlign: "center", margin: 0 }}>
@@ -144,6 +155,10 @@ export default function Dashboard() {
             )
           }
         </Row >
+        <ProductPreview
+          visible={isPreviewVisible}
+          item={previewItem}
+          onClose={() => setIsPreviewVisible(false)} />
       </div>
     </>
   )
